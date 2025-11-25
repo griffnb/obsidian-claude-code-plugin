@@ -53,8 +53,7 @@ export const ResultSection: React.FC<ResultSectionProps> = ({
 
           {result && (
             <div className="claude-code-result-area markdown-rendered">
-              {/* We'll use a simple div for now, but ideally ReactMarkdown */}
-              <div dangerouslySetInnerHTML={{ __html: result }} />
+              <ReactMarkdown>{result}</ReactMarkdown>
             </div>
           )}
         </div>
