@@ -226,7 +226,7 @@ export const ClaudeCodeApp: React.FC<ClaudeCodeAppProps> = ({
 
   return (
     <PluginProvider app={app} plugin={plugin}>
-      <div className="claude-code-view bg-gray-200">
+      <div className="flex h-full flex-col gap-4 overflow-y-auto bg-gray-50 p-4 dark:bg-gray-900">
         <Header />
 
         <InputSection

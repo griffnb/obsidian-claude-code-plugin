@@ -43,10 +43,12 @@ export const InputSection: React.FC<InputSectionProps> = ({
   };
 
   return (
-    <div className="claude-code-input-section">
-      <label>Your Instructions:</label>
+    <div className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <label className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+        Your Instructions:
+      </label>
       <textarea
-        className="claude-code-prompt-input"
+        className="min-h-[100px] w-full resize-y rounded-lg border border-gray-300 bg-gray-50 p-3 font-mono text-sm text-gray-900 transition-all placeholder:text-gray-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
         rows={4}
         placeholder='e.g., "Add more examples to this section" or "Reorganize with better headers" (Enter to send, Ctrl+Enter for new line)'
         value={prompt}
@@ -55,29 +57,33 @@ export const InputSection: React.FC<InputSectionProps> = ({
         disabled={isProcessing}
       />
 
-      <div className="claude-code-options">
-        <label className="claude-code-checkbox-label">
+      <div className="flex flex-wrap items-center gap-4">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-700 transition-colors hover:text-purple-600 dark:text-gray-300 dark:hover:text-purple-400">
           <input
             type="checkbox"
             checked={selectedTextOnly}
             onChange={(e) => setSelectedTextOnly(e.target.checked)}
-          />{" "}
-          Edit selected text only
+            className="size-4 cursor-pointer rounded border-gray-300 bg-gray-100 text-purple-600 focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-700"
+          />
+          <span className="font-medium">Edit selected text only</span>
         </label>
 
-        <label className="claude-code-checkbox-label">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-gray-700 transition-colors hover:text-purple-600 dark:text-gray-300 dark:hover:text-purple-400">
           <input
             type="checkbox"
             checked={autoAccept}
             onChange={(e) => setAutoAccept(e.target.checked)}
-          />{" "}
-          Auto-accept changes
+            className="size-4 cursor-pointer rounded border-gray-300 bg-gray-100 text-purple-600 focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-700"
+          />
+          <span className="font-medium">Auto-accept changes</span>
         </label>
 
-        <div className="claude-code-model-select">
-          <label className="claude-code-model-label">Model: </label>
+        <div className="ml-auto flex items-center gap-2">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Model:
+          </label>
           <select
-            className="claude-code-model-dropdown"
+            className="cursor-pointer rounded-lg border border-gray-300 bg-gray-50 px-3 py-1.5 text-sm text-gray-900 transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800"
             value={selectedModel}
             onChange={(e) => setSelectedModel(e.target.value)}
           >
@@ -89,15 +95,45 @@ export const InputSection: React.FC<InputSectionProps> = ({
         </div>
       </div>
 
-      <div className="claude-code-button-container">
-        <button className="mod-cta" onClick={onRun} disabled={isProcessing}>
-          {isProcessing ? "Running..." : "Run Claude Code"}
-        </button>
-        <button className="mod-cta" onClick={onRun} disabled={isProcessing}>
-          {isProcessing ? "Running..." : "Run Claude Code"}
+      <div className="mt-2 flex gap-3">
+        <button
+          className="flex-1 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:from-purple-700 hover:to-indigo-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-md disabled:hover:translate-y-0"
+          onClick={onRun}
+          disabled={isProcessing}
+        >
+          {isProcessing ? (
+            <span className="flex items-center justify-center gap-2">
+              <svg
+                className="size-4 animate-spin"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Running...
+            </span>
+          ) : (
+            "Run Claude Code"
+          )}
         </button>
         {isProcessing && (
-          <button className="claude-code-cancel-button" onClick={onCancel}>
+          <button
+            className="rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:from-red-600 hover:to-red-700 hover:shadow-lg"
+            onClick={onCancel}
+          >
             Cancel
           </button>
         )}
