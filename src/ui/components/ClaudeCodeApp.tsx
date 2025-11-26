@@ -1,20 +1,19 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { App, Notice, MarkdownView, TFile } from "obsidian";
+import { App, MarkdownView, Notice, TFile } from "obsidian";
+import React, { useEffect, useState } from "react";
+import { AgentStep, SessionHistoryItem } from "../../core/types";
 import ClaudeCodePlugin from "../../main";
-import { PluginProvider } from "../context/PluginContext";
-import { Header } from "./Header";
-import { InputSection } from "./InputSection";
-import { ResultSection } from "./ResultSection";
-import { PreviewSection } from "./PreviewSection";
-import { AgentSection } from "./AgentSection";
-import { OutputSection } from "./OutputSection";
-import { HistorySection } from "./HistorySection";
 import { NoteContextManager } from "../../managers/note-context-manager";
 import { AgentActivityTracker } from "../agent-activity-tracker";
+import { PluginProvider } from "../context/PluginContext";
 import { OutputRenderer } from "../output-renderer";
 import { OutputStatusManager } from "../parsers/output-status-manager";
-import { ClaudeCodeResponse } from "../../core/claude-code-runner";
-import { AgentStep, SessionHistoryItem } from "../../core/types";
+import { AgentSection } from "./AgentSection";
+import { Header } from "./Header";
+import { HistorySection } from "./HistorySection";
+import { InputSection } from "./InputSection";
+import { OutputSection } from "./OutputSection";
+import { PreviewSection } from "./PreviewSection";
+import { ResultSection } from "./ResultSection";
 
 interface ClaudeCodeAppProps {
   app: App;
@@ -38,16 +37,16 @@ export const ClaudeCodeApp: React.FC<ClaudeCodeAppProps> = ({
 
   // Settings State
   const [selectedModel, setSelectedModel] = useState(
-    plugin.settings.modelAlias || ""
+    plugin.settings.modelAlias || "",
   );
   const [autoAccept, setAutoAccept] = useState(
-    plugin.settings.autoAcceptChanges
+    plugin.settings.autoAcceptChanges,
   );
   const [selectedTextOnly, setSelectedTextOnly] = useState(false);
 
   // Managers (refs to keep them across renders)
   const contextManager = React.useRef(
-    new NoteContextManager(plugin.settings, ".obsidian/claude-code-sessions")
+    new NoteContextManager(plugin.settings, ".obsidian/claude-code-sessions"),
   );
   const agentTracker = React.useRef(new AgentActivityTracker());
 
@@ -161,7 +160,7 @@ export const ClaudeCodeApp: React.FC<ClaudeCodeAppProps> = ({
           if (isAssistantMessage) {
             setResult((prev) => prev + line);
           }
-        }
+        },
       );
 
       context.isRunning = false;

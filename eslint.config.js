@@ -6,7 +6,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default [
-  { ignores: ["dist", "build"] },
+  { ignores: ["dist", "build", "eslint.config.js"] },
   js.configs.recommended,
   importPlugin.flatConfigs.recommended,
   importPlugin.flatConfigs.typescript,
@@ -15,7 +15,7 @@ export default [
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["./src/**/*.{ts,tsx}"],
     plugins: {
       "@typescript-eslint": tseslint.plugin,
       import: importPlugin.flatConfigs.recommended.plugins.import,
