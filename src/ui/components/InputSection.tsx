@@ -93,6 +93,9 @@ export const InputSection: React.FC<InputSectionProps> = ({
         <button className="mod-cta" onClick={onRun} disabled={isProcessing}>
           {isProcessing ? "Running..." : "Run Claude Code"}
         </button>
+        <button className="mod-cta" onClick={onRun} disabled={isProcessing}>
+          {isProcessing ? "Running..." : "Run Claude Code"}
+        </button>
         {isProcessing && (
           <button className="claude-code-cancel-button" onClick={onCancel}>
             Cancel
