@@ -12,8 +12,8 @@ You must always follow the documentation and PRD. If you have questions, please 
 
 ## Commands
 
-- `npm run dev`: Build the plugin in development mode (watch mode).
-- `npm run build`: Build the plugin for production.
+- `bun run dev`: Build the plugin in development mode (watch mode).
+- `bun run build`: Build the plugin for production.
 - `make build-install DEST=<path>`: Build and install to a specific Obsidian vault.
 - `make setup-plugin DEST=<path>`: Symlink the build directory to an Obsidian vault.
 
