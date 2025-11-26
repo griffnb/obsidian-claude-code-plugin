@@ -2,31 +2,7 @@
 
 This document outlines planned optimizations and improvements for the Obsidian Claude Code Plugin to enhance maintainability, extensibility, and developer experience.
 
-## 1. Frontend Architecture: React Migration
-
-**Status**: ✅ Completed
-**Goal**: Move from imperative DOM manipulation to a declarative React-based UI.
-
-- **Why**: The current `ui-builder.ts` and `view.ts` manually manage DOM elements, which is error-prone and hard to scale. React will make state management (streaming responses, history, settings) much cleaner.
-- **Implementation**:
-  - [x] Install `react` and `react-dom`.
-  - [x] Create a root `ClaudeCodeView` component.
-  - [x] Pass the plugin instance and `App` object via React Context (`AppContext`).
-  - [x] Refactor `view.ts` to mount the React root.
-  - Reference: [Use React in your plugin](https://docs.obsidian.md/Plugins/Getting+started/Use+React+in+your+plugin)
-
-## 2. Styling: Tailwind CSS Integration
-
-**Goal**: Replace `styles.css` with utility-first CSS using Tailwind.
-
-- **Why**: `styles.css` is becoming large (1200+ lines) and difficult to maintain. Tailwind ensures consistency and speeds up UI development.
-- **Implementation**:
-  - Set up `postcss` and `tailwindcss`.
-  - Configure `esbuild` to process CSS.
-  - Prefix Tailwind classes (e.g., `tw-`) to avoid conflicts with Obsidian themes or other plugins.
-  - Refactor existing CSS to Tailwind utilities.
-
-## 3. CI/CD: GitHub Actions
+## 1. CI/CD: GitHub Actions
 
 **Goal**: Automate testing, building, and releasing.
 
@@ -35,6 +11,23 @@ This document outlines planned optimizations and improvements for the Obsidian C
   - Create `.github/workflows/test.yml` for linting and type checking.
   - Create `.github/workflows/release.yml` to build `main.js`, `manifest.json`, and `styles.css` and attach them to GitHub Releases.
   - Reference: [Release your plugin with GitHub Actions](https://docs.obsidian.md/Plugins/Releasing/Release+your+plugin+with+GitHub+Actions)
+
+## 2. Better Testing
+
+**GOAL**: Make testing not require obsidian to be active
+
+- **Why**: Currently, testing requires obsidian to be active
+- **Implementation**:
+  - Install and setup Storybook to run the components in isolation
+
+## 3. Abstract the UI
+
+**Goal**: Abstract command line and UI integration to not even need obsidian to be active
+
+- **Why**: Currently, the UI is tightly coupled to Obsidian's UI, The ui should be agnostic to where it is plugged in so that we can reuse this UI for other plugins/ systems
+- **Implementation**:
+  - Abstract the UI to be agnostic to where it is plugged in
+  - Abstract the command line integration to be agnostic to where it is plugged in
 
 ## 4. Settings & Configuration Overhaul
 
@@ -74,7 +67,15 @@ This document outlines planned optimizations and improvements for the Obsidian C
   - **Workflow Hooks**: Pre/post-run hooks (e.g., "Run linter after Claude edits a file").
   - **Slash Commands**: Implement slash commands in the chat interface to trigger specific workflows (e.g., `/fix`, `/test`).
 
-## 7. Code Quality & Testing
+## 7. Implement AI Libraries for the UI
+
+**Goal**: Implement AI Libraries for the UI
+
+- **Why**:
+- **Implementation**:
+  - see if ai.dev components can be used to build the UI
+
+## 8. Code Quality & Testing
 
 **Goal**: Improve codebase reliability.
 
