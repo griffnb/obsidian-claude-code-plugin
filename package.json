@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Claude Code integration for Obsidian",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "build:css": "bunx postcss src/styles.css -o build/styles.css",
     "dev": "concurrently \"node esbuild.config.mjs\" \"bunx postcss src/styles.css -o build/styles.css --watch\"",

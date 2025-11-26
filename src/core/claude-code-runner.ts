@@ -1,13 +1,12 @@
 import { ChildProcess } from "child_process";
-import { Notice } from "obsidian";
+import { CliArgsBuilder } from "./cli-args-builder";
+import { ProcessSpawner } from "./process-spawner";
+import { PromptBuilder } from "./prompt-builder";
+import { ResponseParser } from "./response-parser";
+import { SessionManager } from "./session-manager";
 import { ClaudeCodeSettings } from "./settings";
 import { ResponseContentExtractor } from "./streaming/response-content-extractor";
 import { StreamEventProcessor } from "./streaming/stream-event-processor";
-import { SessionManager } from "./session-manager";
-import { PromptBuilder } from "./prompt-builder";
-import { CliArgsBuilder } from "./cli-args-builder";
-import { ProcessSpawner } from "./process-spawner";
-import { ResponseParser } from "./response-parser";
 
 export interface ClaudeCodeRequest {
   noteContent: string;
@@ -41,7 +40,7 @@ export class ClaudeCodeRunner {
         line: string,
         isMarkdown?: boolean,
         isStreaming?: boolean | string,
-        isAssistantMessage?: boolean
+        isAssistantMessage?: boolean,
       ) => void)
     | null = null;
   private currentSessionId: string | null = null; // Store session ID from init event
@@ -59,8 +58,8 @@ export class ClaudeCodeRunner {
       line: string,
       isMarkdown?: boolean,
       isStreaming?: boolean | string,
-      isAssistantMessage?: boolean
-    ) => void
+      isAssistantMessage?: boolean,
+    ) => void,
   ): Promise<ClaudeCodeResponse> {
     this.outputCallback = onOutput || null;
 
@@ -97,7 +96,7 @@ export class ClaudeCodeRunner {
    */
   private async executeClaudeCode(
     claudePath: string,
-    request: ClaudeCodeRequest
+    request: ClaudeCodeRequest,
   ): Promise<ClaudeCodeResponse> {
     return new Promise((resolve) => {
       const output: string[] = [];
@@ -107,13 +106,13 @@ export class ClaudeCodeRunner {
       // 1. Setup session
       const sessionInfo = SessionManager.getSessionInfo(
         request.notePath,
-        request.vaultPath || ""
+        request.vaultPath || "",
       );
 
       this.sendOutput(
         sessionInfo.isNewSession
           ? `→ Starting new session\n`
-          : `✓ Resuming session: ${sessionInfo.sessionId}\n`
+          : `✓ Resuming session: ${sessionInfo.sessionId}\n`,
       );
 
       // 2. Build prompt
@@ -122,7 +121,7 @@ export class ClaudeCodeRunner {
         sessionInfo.sessionDir,
         this.settings.customSystemPrompt,
         this.settings.allowVaultAccess,
-        this.settings.enablePermissionlessMode || request.bypassPermissions
+        this.settings.enablePermissionlessMode || request.bypassPermissions,
       );
 
       // 3. Build CLI arguments
@@ -139,7 +138,7 @@ export class ClaudeCodeRunner {
         this.sendOutput(`🔓 Permissionless mode enabled\n`);
       } else {
         this.sendOutput(
-          `🔒 Permission mode: interactive (Claude will ask for permission)\n`
+          `🔒 Permission mode: interactive (Claude will ask for permission)\n`,
         );
       }
 
@@ -167,7 +166,7 @@ export class ClaudeCodeRunner {
           onDebugOutput: (msg) => this.sendOutput(msg),
         });
         this.sendOutput(
-          `[DEBUG] Process spawned successfully, PID: ${this.currentProcess.pid}\n`
+          `[DEBUG] Process spawned successfully, PID: ${this.currentProcess.pid}\n`,
         );
       } catch (spawnError) {
         this.sendOutput(`\n❌ Failed to spawn process: ${spawnError}`);
@@ -183,7 +182,7 @@ export class ClaudeCodeRunner {
         timeoutId = setTimeout(() => {
           if (this.currentProcess) {
             this.sendOutput(
-              `\nTimeout after ${this.settings.timeoutSeconds} seconds, terminating...`
+              `\nTimeout after ${this.settings.timeoutSeconds} seconds, terminating...`,
             );
             this.currentProcess.kill();
           }
@@ -228,7 +227,7 @@ export class ClaudeCodeRunner {
 
       // Add debug logging
       this.sendOutput(
-        `\n[DEBUG] Process spawned, PID: ${this.currentProcess.pid}`
+        `\n[DEBUG] Process spawned, PID: ${this.currentProcess.pid}`,
       );
       this.sendOutput(`[DEBUG] Working dir: ${workingDir}`);
       this.sendOutput(`[DEBUG] Session dir: ${sessionInfo.sessionDir}`);
@@ -237,7 +236,7 @@ export class ClaudeCodeRunner {
       // Handle process exit (happens before close)
       this.currentProcess.on("exit", (code: number, signal: string) => {
         this.sendOutput(
-          `\n[DEBUG] Process exited with code: ${code}, signal: ${signal}`
+          `\n[DEBUG] Process exited with code: ${code}, signal: ${signal}`,
         );
       });
 
@@ -253,14 +252,14 @@ export class ClaudeCodeRunner {
         this.sendOutput(
           `\n[DEBUG] .claude directory after run: ${
             claudeDirCreated ? "EXISTS" : "NOT FOUND"
-          }`
+          }`,
         );
         if (claudeDirCreated) {
           // List contents
           try {
             const contents = fs.readdirSync(claudeDir);
             this.sendOutput(
-              `\n[DEBUG] .claude contents: ${contents.join(", ")}`
+              `\n[DEBUG] .claude contents: ${contents.join(", ")}`,
             );
           } catch (e) {
             this.sendOutput(`\n[DEBUG] Error reading .claude: ${e}`);
@@ -280,11 +279,11 @@ export class ClaudeCodeRunner {
           const parsed = ResponseParser.parseOutput(output);
           const isPermissionRequest =
             ResponseContentExtractor.detectPermissionRequest(
-              parsed.assistantText
+              parsed.assistantText,
             );
 
           this.sendOutput(
-            `\n[DEBUG] Full response length: ${parsed.assistantText.length} chars`
+            `\n[DEBUG] Full response length: ${parsed.assistantText.length} chars`,
           );
 
           // 7. Save session data
@@ -292,17 +291,17 @@ export class ClaudeCodeRunner {
             SessionManager.saveConversationHistory(
               sessionInfo.sessionDir,
               request.userPrompt,
-              parsed.assistantText
+              parsed.assistantText,
             );
             this.sendOutput(`\n💾 Conversation history saved\n`);
 
             if (this.currentSessionId) {
               SessionManager.saveSessionId(
                 sessionInfo.sessionDir,
-                this.currentSessionId
+                this.currentSessionId,
               );
               this.sendOutput(
-                `💾 Session ID saved: ${this.currentSessionId}\n`
+                `💾 Session ID saved: ${this.currentSessionId}\n`,
               );
             }
           } catch (e) {
@@ -313,7 +312,7 @@ export class ClaudeCodeRunner {
           const response = ResponseParser.buildResponse(
             parsed,
             output,
-            isPermissionRequest
+            isPermissionRequest,
           );
           const totalDuration = Date.now() - startTime;
 
@@ -322,17 +321,17 @@ export class ClaudeCodeRunner {
               this.sendOutput(
                 `\n✓ Claude Code completed successfully in ${(
                   totalDuration / 1000
-                ).toFixed(2)}s`
+                ).toFixed(2)}s`,
               );
             } else if (isPermissionRequest) {
               this.sendOutput(
-                `\n⚠️ Permission request detected - waiting for user approval`
+                `\n⚠️ Permission request detected - waiting for user approval`,
               );
             } else {
               this.sendOutput(
                 `\n✓ Analysis completed (no file modifications) in ${(
                   totalDuration / 1000
-                ).toFixed(2)}s`
+                ).toFixed(2)}s`,
               );
             }
           } else {
@@ -350,8 +349,8 @@ export class ClaudeCodeRunner {
           resolve(
             ResponseParser.buildErrorResponse(
               `Claude Code exited with code ${code}. ${errorOutput}`,
-              output
-            )
+              output,
+            ),
           );
         }
       });
@@ -368,8 +367,8 @@ export class ClaudeCodeRunner {
         resolve(
           ResponseParser.buildErrorResponse(
             `Failed to spawn Claude Code: ${err.message}`,
-            output
-          )
+            output,
+          ),
         );
       });
     });
@@ -391,7 +390,7 @@ export class ClaudeCodeRunner {
       }
     }
     console.error(
-      "Cannot send input: no active process or stdin not available"
+      "Cannot send input: no active process or stdin not available",
     );
     return false;
   }
@@ -424,11 +423,11 @@ export class ClaudeCodeRunner {
         text: string,
         isMarkdown?: boolean,
         isStreaming?: boolean | "finish",
-        isAssistantMessage?: boolean
+        isAssistantMessage?: boolean,
       ) => this.sendOutput(text, isMarkdown, isStreaming, isAssistantMessage),
       (sessionId: string) => {
         this.currentSessionId = sessionId;
-      }
+      },
     );
   }
 
@@ -439,7 +438,7 @@ export class ClaudeCodeRunner {
     text: string,
     isMarkdown: boolean = false,
     isStreaming?: boolean | string,
-    isAssistantMessage?: boolean
+    isAssistantMessage?: boolean,
   ): void {
     if (this.outputCallback) {
       if (isAssistantMessage) {
@@ -447,7 +446,7 @@ export class ClaudeCodeRunner {
           "[ClaudeCodeRunner sendOutput] isAssistantMessage=",
           isAssistantMessage,
           "text=",
-          text.substring(0, 20)
+          text.substring(0, 20),
         );
       }
       this.outputCallback(text, isMarkdown, isStreaming, isAssistantMessage);

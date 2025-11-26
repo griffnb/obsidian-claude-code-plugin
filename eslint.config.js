@@ -2,23 +2,20 @@ import js from "@eslint/js";
 import importPlugin from "eslint-plugin-import";
 import reactPlugin from "eslint-plugin-react";
 import tailwind from "eslint-plugin-tailwindcss";
-import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-export default defineConfig([
-  { ignores: ["dist", "build", ".react-router"] },
+export default [
+  { ignores: ["dist", "build"] },
+  js.configs.recommended,
+  importPlugin.flatConfigs.recommended,
+  importPlugin.flatConfigs.typescript,
+  ...tseslint.configs.recommended,
+  ...tailwind.configs["flat/recommended"],
+  reactPlugin.configs.flat.recommended,
+  reactPlugin.configs.flat["jsx-runtime"],
   {
-    files: ["**/*.{js,jsx,ts,tsx}"],
-    extends: [
-      js.configs.recommended,
-      importPlugin.flatConfigs.recommended,
-      importPlugin.flatConfigs.typescript,
-      ...tseslint.configs.recommended,
-      ...tailwind.configs["flat/recommended"],
-      reactPlugin.configs.flat.recommended,
-      reactPlugin.configs.flat["jsx-runtime"],
-    ],
+    files: ["**/*.{ts,tsx}"],
     plugins: {
       "@typescript-eslint": tseslint.plugin,
       import: importPlugin.flatConfigs.recommended.plugins.import,
@@ -34,7 +31,7 @@ export default defineConfig([
     settings: {
       tailwindcss: {
         callees: ["classnames", "clsx", "ctl", "cn", "cva"],
-        //config: "tailwind.config.js", // Use the root config which extends with custom colors
+        config: "./tailwind.config.js", // Use the root config which extends with custom colors
         cssFiles: [
           "**/*.css",
           "!**/node_modules",
@@ -65,7 +62,6 @@ export default defineConfig([
     },
     rules: {
       "react/jsx-key": ["error", { checkFragmentShorthand: true }],
-      //"@next/next/no-img-element": "warn",
       "react/prop-types": "off",
       "import/no-unresolved": "off",
       "import/no-cycle": "error",
@@ -76,4 +72,4 @@ export default defineConfig([
       allowInterfaces: "off",
     },
   },
-]);
+];
