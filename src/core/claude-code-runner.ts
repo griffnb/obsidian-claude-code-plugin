@@ -212,6 +212,7 @@ export class ClaudeCodeRunner {
 
             // Process the event (will handle streaming output)
             this.handleStreamEvent(event);
+            //eslint-disable-next-line
           } catch (e) {
             this.sendOutput(`[raw] ${line}`);
           }

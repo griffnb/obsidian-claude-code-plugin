@@ -1,5 +1,4 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
-import React from "react";
 import { createRoot, Root } from "react-dom/client";
 import ClaudeCodePlugin from "../main";
 import { ClaudeCodeApp } from "./components/ClaudeCodeApp";
