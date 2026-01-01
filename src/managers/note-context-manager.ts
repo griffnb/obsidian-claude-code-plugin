@@ -2,9 +2,22 @@
  * Note Context Manager - Manages per-note conversation contexts
  */
 
+import crypto from "crypto";
+import fs from "fs";
+import path from "path";
+
 import { ClaudeCodeRunner } from "../core/claude-code-runner";
 import { ClaudeCodeSettings } from "../core/settings";
-import { NoteContext } from "../core/types";
+import { AgentStep, NoteContext, SessionHistoryItem } from "../core/types";
+
+interface NoteFile {
+  notePath: string;
+  sessionId: string | null;
+  history: SessionHistoryItem[];
+  outputLines: string[];
+  agentSteps: AgentStep[];
+  savedAt: string;
+}
 
 export class NoteContextManager {
   private contexts: Map<string, NoteContext> = new Map();
@@ -46,9 +59,6 @@ export class NoteContextManager {
    * Load all note contexts from disk
    */
   async loadContexts(vaultPath: string): Promise<void> {
-    const fs = require("fs");
-    const path = require("path");
-
     const contextsDir = path.join(vaultPath, this.dataDir);
 
     if (!fs.existsSync(contextsDir)) {
@@ -63,7 +73,9 @@ export class NoteContextManager {
 
       if (fs.existsSync(contextFile)) {
         try {
-          const data = JSON.parse(fs.readFileSync(contextFile, "utf8"));
+          const data = JSON.parse(
+            fs.readFileSync(contextFile, "utf8"),
+          ) as NoteFile;
 
           // Reconstruct the context
           const context: NoteContext = {
@@ -95,10 +107,6 @@ export class NoteContextManager {
     const context = this.contexts.get(notePath);
     if (!context) return;
 
-    const fs = require("fs");
-    const path = require("path");
-    const crypto = require("crypto");
-
     const noteHash = crypto.createHash("md5").update(notePath).digest("hex");
     const contextDir = path.join(vaultPath, this.dataDir, noteHash);
 
@@ -108,7 +116,7 @@ export class NoteContextManager {
 
     const contextFile = path.join(contextDir, "context.json");
 
-    const dataToSave = {
+    const dataToSave: NoteFile = {
       notePath: notePath,
       sessionId: context.sessionId,
       history: context.history,
