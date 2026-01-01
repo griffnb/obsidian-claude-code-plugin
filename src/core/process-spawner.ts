@@ -1,6 +1,8 @@
 import { ChildProcess, execSync, spawn } from "child_process";
 import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
+import process from "process";
 
 /**
  * Configuration for spawning Claude Code process
@@ -196,7 +198,7 @@ export class ProcessSpawner {
     // If it starts with ~, expand to home directory
     let resolvedClaudePath = config.claudePath;
     if (resolvedClaudePath.startsWith("~")) {
-      resolvedClaudePath = resolvedClaudePath.replace("~", shellEnv.HOME || "");
+      resolvedClaudePath = resolvedClaudePath.replace("~", os.homedir() || "");
     }
 
     // If it's not an absolute path, try to find it in PATH

@@ -1,6 +1,8 @@
 import { exec, execSync } from "child_process";
 import fs from "fs";
 import { App, PluginSettingTab, Setting } from "obsidian";
+import os from "os";
+import process from "process";
 import ClaudeCodePlugin from "../main";
 
 export interface ClaudeCodeSettings {
@@ -237,9 +239,9 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
       "claude", // If in PATH
       "/usr/local/bin/claude",
       "/usr/bin/claude",
-      `${process.env.HOME}/.local/bin/claude`,
-      `${process.env.HOME}/bin/claude`,
-      `${process.env.HOME}/.bun/bin/claude`,
+      `${os.homedir()}/.local/bin/claude`,
+      `${os.homedir()}/bin/claude`,
+      `${os.homedir()}/.bun/bin/claude`,
     ];
 
     for (const path of possiblePaths) {
@@ -278,8 +280,8 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
       // Build enhanced PATH
       const envPath = process.env.PATH || "";
       const pathsToAdd = [
-        `${process.env.HOME}/.nvm/versions/node/v20.18.2/bin`,
-        `${process.env.HOME}/.bun/bin`,
+        `${os.homedir()}/.nvm/versions/node/v20.18.2/bin`,
+        `${os.homedir()}/.bun/bin`,
         "/usr/local/bin",
         "/usr/bin",
         "/bin",

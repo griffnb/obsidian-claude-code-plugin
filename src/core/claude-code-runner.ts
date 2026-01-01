@@ -1,6 +1,8 @@
 import { ChildProcess } from "child_process";
 import fs from "fs";
+import os from "os";
 import path from "path";
+import process from "process";
 import { CliArgsBuilder } from "./cli-args-builder";
 import { ProcessSpawner } from "./process-spawner";
 import { PromptBuilder } from "./prompt-builder";
@@ -69,7 +71,7 @@ export class ClaudeCodeRunner {
 
     // Expand ~ to home directory
     if (claudePath.startsWith("~")) {
-      claudePath = claudePath.replace("~", process.env.HOME || "");
+      claudePath = claudePath.replace("~", os.homedir() || "");
     }
 
     // Validate that Claude Code is available

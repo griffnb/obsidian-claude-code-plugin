@@ -9,6 +9,7 @@ export default tseslint.config(
     ignores: ["dist", "build", "eslint.config.js"],
     files: ["./src/**/*.{ts,tsx,json,js,jsx}"],
   },
+
   ...tseslint.configs.recommendedTypeChecked,
   ...tailwind.configs["flat/recommended"],
   reactPlugin.configs.flat.recommended,
