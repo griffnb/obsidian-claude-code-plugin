@@ -29,6 +29,14 @@ export default [
       },
     },
     settings: {
+      "import/resolver": {
+        typescript: {
+          alwaysTryTypes: true,
+          project: "./tsconfig.json",
+        },
+        node: true,
+      },
+      "import/core-modules": ["obsidian"],
       tailwindcss: {
         callees: ["classnames", "clsx", "ctl", "cn", "cva"],
         config: "./tailwind.config.js", // Use the root config which extends with custom colors
@@ -63,7 +71,7 @@ export default [
     rules: {
       "react/jsx-key": ["error", { checkFragmentShorthand: true }],
       "react/prop-types": "off",
-      "import/no-unresolved": "off",
+      "import/no-unresolved": ["error", { ignore: ["obsidian"] }],
       "import/no-cycle": "error",
       "tailwindcss/no-custom-classname": "warn",
       "@typescript-eslint/no-explicit-any": "warn",

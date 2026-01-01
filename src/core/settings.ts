@@ -1,4 +1,5 @@
-import { execSync } from "child_process";
+import { exec, execSync } from "child_process";
+import fs from "fs";
 import { App, PluginSettingTab, Setting } from "obsidian";
 import ClaudeCodePlugin from "../main";
 
@@ -251,11 +252,11 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
           }
         } else {
           // Check if file exists for absolute paths
-          const fs = require("fs");
           if (fs.existsSync(path)) {
             return path;
           }
         }
+        //eslint-disable-next-line
       } catch (e) {
         // Continue to next path
       }
@@ -273,8 +274,6 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
   }> {
     try {
       const path = this.plugin.settings.claudeCodePath || "claude";
-      const { exec } = require("child_process");
-      const fs = require("fs");
 
       // Build enhanced PATH
       const envPath = process.env.PATH || "";
@@ -300,7 +299,7 @@ export class ClaudeCodeSettingTab extends PluginSettingTab {
               PATH: enhancedPath,
             },
           },
-          (error: any, stdout: string, stderr: string) => {
+          (error: Error) => {
             if (error) {
               resolve({ success: false, error: error.message });
             } else {

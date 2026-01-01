@@ -90,7 +90,7 @@ export class SessionManager {
 
     try {
       // Load existing history
-      let history: any[] = [];
+      let history: { role: string; content: string; timestamp: string }[] = [];
       if (fs.existsSync(historyFile)) {
         history = JSON.parse(fs.readFileSync(historyFile, "utf8"));
       }

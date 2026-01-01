@@ -6,11 +6,13 @@ import { ResponseContentExtractor } from "./streaming/response-content-extractor
  */
 export interface ParsedOutput {
   assistantText: string;
-  tokenUsage?: {
-    inputTokens?: number;
-    outputTokens?: number;
-    totalTokens?: number;
-  };
+  tokenUsage?: TokenUsage;
+}
+
+interface TokenUsage {
+  inputTokens?: number;
+  outputTokens?: number;
+  totalTokens?: number;
 }
 
 /**
@@ -25,7 +27,7 @@ export class ResponseParser {
    */
   static parseOutput(outputLines: string[]): ParsedOutput {
     let assistantText = "";
-    let tokenUsage: any = undefined;
+    let tokenUsage: TokenUsage | undefined = undefined;
 
     for (const line of outputLines) {
       try {
@@ -63,6 +65,7 @@ export class ResponseParser {
             };
           }
         }
+        //eslint-disable-next-line
       } catch (e) {
         // Skip invalid JSON lines
       }

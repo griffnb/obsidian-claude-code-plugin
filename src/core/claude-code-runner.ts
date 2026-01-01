@@ -1,4 +1,6 @@
 import { ChildProcess } from "child_process";
+import fs from "fs";
+import path from "path";
 import { CliArgsBuilder } from "./cli-args-builder";
 import { ProcessSpawner } from "./process-spawner";
 import { PromptBuilder } from "./prompt-builder";
@@ -245,9 +247,6 @@ export class ClaudeCodeRunner {
       this.currentProcess.on("close", (code: number) => {
         this.sendOutput(`\n[DEBUG] Process closed with code: ${code}`);
 
-        // Check if .claude directory was created (debug only)
-        const fs = require("fs");
-        const path = require("path");
         const claudeDir = path.join(sessionInfo.sessionDir, ".claude");
         const claudeDirCreated = fs.existsSync(claudeDir);
         this.sendOutput(
@@ -417,7 +416,7 @@ export class ClaudeCodeRunner {
   /**
    * Handle stream-json events
    */
-  private handleStreamEvent(event: any): void {
+  private handleStreamEvent(event: unknown): void {
     StreamEventProcessor.processEvent(
       event,
       (
