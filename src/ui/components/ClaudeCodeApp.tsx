@@ -46,7 +46,10 @@ export const ClaudeCodeApp: React.FC<ClaudeCodeAppProps> = ({
 
   // Managers (refs to keep them across renders)
   const contextManager = React.useRef(
-    new NoteContextManager(plugin.settings, ".obsidian/claude-code-sessions"),
+    new NoteContextManager(
+      plugin.settings,
+      app.vault.configDir + "/claude-code-sessions",
+    ),
   );
   const agentTracker = React.useRef(new AgentActivityTracker());
 

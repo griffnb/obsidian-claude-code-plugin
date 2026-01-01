@@ -19,7 +19,7 @@ export class ClaudeCodeView extends ItemView {
   }
 
   getDisplayText(): string {
-    return "Claude Code";
+    return "Claude code";
   }
 
   getIcon(): string {

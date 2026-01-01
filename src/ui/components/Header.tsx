@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePlugin } from "../context/PluginContext";
 
-export const Header: React.FC = () => {
+export const Header = () => {
   const { app } = usePlugin();
   const [currentNote, setCurrentNote] = useState<string>("No note selected");
 
